@@ -1,0 +1,137 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #222;
+    padding: 10px;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin-right: 15px;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: 20px;
+}
+
+.dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.project-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 250px;
+    background-color: #f9f9f9;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+}
+
+.project-card h2 {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+}
+
+.project-card .description {
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.project-card .stats {
+    font-size: 0.85em;
+    margin-bottom: 10px;
+}
+
+.project-card .estado {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.project-card .estado.activo { color: green; }
+.project-card .estado.inactivo { color: gray; }
+.project-card .estado.completado { color: blue; }
+
+.project-card .buttons a {
+    text-decoration: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 5px;
+    color: white;
+}
+
+.project-card .btn-primary { background-color: #007BFF; }
+.project-card .btn-secondary { background-color: #6C757D; }
+
+/* CSS DE DETALLE DE EPICS Y HU */
+
+.epics-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.epic-card {
+    background: #f3f6fa;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.epic-card h2 a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.epic-card h2 a:hover {
+    text-decoration: underline;
+}
+
+.hu-container {
+    margin-top: 15px;
+    margin-left: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hu-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.hu-card a {
+    text-decoration: none;
+    color: #333;
+}
+
+.hu-card a:hover h4 {
+    color: #007bff;
+}
+
+.estado {
+    font-weight: bold;
+}
+
+.estado.nuevo { color: #007bff; }
+.estado.en_progreso { color: #ff9800; }
+.estado.terminado { color: #4caf50; }
+
+.no-hu {
+    font-style: italic;
+    color: #666;
+}

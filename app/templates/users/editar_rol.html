@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h3>Editar Rol</h3>
+
+  <form method="POST">
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre del Rol</label>
+      <input type="text" id="nombre" name="nombre" class="form-control" value="{{ rol.nombre }}" required>
+    </div>
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <input type="text" id="descripcion" name="descripcion" class="form-control" value="{{ rol.descripcion }}" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a href="{{ url_for('user_bp.index') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Épicas y HUs{% endblock %}
+
+{% block content %}
+<h1>Épicas - Historias de Usuario</h1>
+
+<div class="epics-container">
+    {% for epic in epics %}
+        <div class="epic-card">
+            <h2>
+                <a href="{{ url_for('epic_bp.detalle_epic', id=epic.id) }}">{{ epic.nombre }}</a>
+            </h2>
+            <p><strong>Prioridad:</strong> {{ epic.prioridad.value|capitalize }}</p>
+            <p><strong>Estado:</strong> {{ epic.estado.value|replace('_',' ')|capitalize }}</p>
+            <p>{{ epic.descripcion }}</p>
+
+            <div class="hu-container">
+                {% for hu in epic.hus %}
+                    <div class="hu-card">
+                        <a href="{{ url_for('epic_bp.detalle_hu', id=hu.id) }}">
+                            <h4>{{ hu.nombre }}</h4>
+                        </a>
+                        <p>{{ hu.descripcion }}</p>
+                        <p class="estado {{ hu.estado.value }}">{{ hu.estado.value|replace('_',' ')|capitalize }}</p>
+                    </div>
+                {% else %}
+                    <p class="no-hu">No hay historias asociadas.</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

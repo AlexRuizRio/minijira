@@ -1,0 +1,17 @@
+    {% extends 'base.html' %}
+
+    {% block title %}{{ proyecto.nombre }} - Mini Jira{% endblock %}
+
+    {% block content %}
+    <h1>{{ proyecto.nombre }}</h1>
+    <p>{{ proyecto.descripcion }}</p>
+
+    <h2>Epics / Historias</h2>
+    <ul>
+        {% for epic in epics %}
+            <li>{{ epic.nombre }} ({{ epic.tipo }})</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('project_bp.index') }}">← Volver a proyectos</a>
+    {% endblock %}
