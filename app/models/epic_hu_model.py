@@ -40,3 +40,4 @@ class EpicHU(db.Model):
 
     # Relación con Project
     proyecto = db.relationship('Project', back_populates='epics')
+

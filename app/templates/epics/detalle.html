@@ -1,26 +1,79 @@
-{% extends "base.html" %}
-{% block title %}{{ epic.nombre }}{% endblock %}
+    {% extends "base.html" %}
+    {% block title %}{{ epic.nombre }}{% endblock %}
 
-{% block content %}
-<h1>{{ epic.nombre }}</h1>
-<p><strong>Descripción:</strong> {{ epic.descripcion }}</p>
-<p><strong>Estado:</strong> {{ epic.estado.value|capitalize }}</p>
-<p><strong>Prioridad:</strong> {{ epic.prioridad.value|capitalize }}</p>
+    {% block content %}
+    <div class="container mt-4">
 
-<h2>Historias de Usuario</h2>
-<div class="hu-container">
-    {% for hu in hus %}
-        <div class="hu-card">
-            <a href="{{ url_for('epic_bp.detalle_hu', id=hu.id) }}">
-                <h4>{{ hu.nombre }}</h4>
-            </a>
-            <p>{{ hu.descripcion }}</p>
-            <p><strong>Estado:</strong> {{ hu.estado.value|replace('_',' ')|capitalize }}</p>
+        <!-- Cabecera -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fw-bold">{{ epic.nombre }}</h1>
+            <a href="{{ url_for('epic_bp.index') }}" class="btn btn-outline-secondary btn-sm">← Volver</a>
         </div>
-    {% else %}
-        <p>No hay historias asociadas.</p>
-    {% endfor %}
-</div>
 
-<a href="{{ url_for('epic_bp.index') }}">← Volver</a>
-{% endblock %}
+        <!-- Información de la épica -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+            <p><strong>Descripción:</strong> {{ epic.descripcion }}</p>
+            <p><strong>Estado:</strong> {{ epic.estado.value|replace('_',' ')|capitalize }}</p>
+            <p><strong>Prioridad:</strong> {{ epic.prioridad.value|capitalize }}</p>
+            </div>
+        </div>
+
+        <!-- Historias de Usuario asociadas -->
+        <h2>Historias de Usuario asociadas</h2>
+        {% if hus %}
+            <div class="row g-3 mb-4">
+            {% for hu in hus %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm hu-card">
+                        <div class="card-body">
+                        <a href="{{ url_for('epic_bp.detalle_hu', id=hu.id) }}">
+                            <h5 class="card-title">{{ hu.nombre }}</h5>
+                        </a>
+                        <p>{{ hu.descripcion }}</p>
+                        <p><strong>Tipo:</strong> {{ hu.tipo.value|upper }}</p>
+                        <p><strong>Estado:</strong> {{ hu.estado.value|replace('_',' ')|capitalize }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted fst-italic">No hay historias asociadas a esta épica.</p>
+        {% endif %}
+
+        <!-- Botón para asociar HU -->
+        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#modalAsociarHU">
+            <i class="bi bi-plus-circle"></i> Asociar Historia de Usuario
+        </button>
+
+        <!-- Modal para asociar HU -->
+        <div class="modal fade" id="modalAsociarHU" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="{{ url_for('epic_bp.asociar_hu', epic_id=epic.id) }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Asociar Historia de Usuario</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% if all_hus %}
+                        <select class="form-select" name="hu_id" required>
+                            {% for hu_item in all_hus %}
+                            <option value="{{ hu_item.id }}">{{ hu_item.nombre }} ({{ hu_item.tipo.value|upper }})</option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <p class="text-muted">No hay Historias de Usuario disponibles.</p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Asociar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

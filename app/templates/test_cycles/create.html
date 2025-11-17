@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Crear Test Cycle{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold mb-4">Crear Test Cycle</h2>
+
+  <form method="POST">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Nombre</label>
+        <input type="text" name="nombre" class="form-control" required>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Estado</label>
+        <select name="estado" class="form-select">
+            {% for estado in estados %}
+                <option value="{{ estado.name }}">{{ estado.value.replace('_', ' ') | capitalize }}</option>
+            {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">Descripción</label>
+        <textarea name="descripcion" class="form-control" rows="4" placeholder="Describe brevemente el objetivo del ciclo..."></textarea>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-primary">Guardar</button>
+      <a href="{{ url_for('test_bp.index') }}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -19,7 +19,7 @@ def create_app(test_config=None):
     else:
         # Leer variable de entorno APP_ENV (puede ser: dev, test, prod)
         env = os.getenv("APP_ENV", "dev")
-
+        print("APP_ENV detectado:", os.getenv("APP_ENV"))
         if env == "test":
             app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/minijira_test'
         else:
@@ -33,7 +33,13 @@ def create_app(test_config=None):
     from app.controllers.epic_hu_controller import epic_bp
     from app.controllers.auth_controller import auth_bp
     from app.controllers.user_controller import user_bp
+    from app.controllers.test_controller import test_bp
+    from app.controllers.results_controller import results_bp
+    from app.controllers.defects_controller import defects_bp
 
+    app.register_blueprint(defects_bp)
+    app.register_blueprint(results_bp)
+    app.register_blueprint(test_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(project_bp)

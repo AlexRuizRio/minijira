@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Defectos{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold mb-4">Lista de Defectos</h2>
+  <a href="{{ url_for('defects_bp.create', result_id=0) }}" class="btn btn-primary mb-3">Nuevo Defecto</a>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs mb-3" id="defectTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pendientes-tab" data-bs-toggle="tab" data-bs-target="#pendientes" type="button" role="tab">Pendientes</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="cerrados-tab" data-bs-toggle="tab" data-bs-target="#cerrados" type="button" role="tab">Cerrados pendientes</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="resueltos-tab" data-bs-toggle="tab" data-bs-target="#resueltos" type="button" role="tab">Resueltos</button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="defectTabsContent">
+    <!-- PENDIENTES -->
+    <div class="tab-pane fade show active" id="pendientes" role="tabpanel">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Test Case</th>
+            <th>Título</th>
+            <th>Estado</th>
+            <th>Prioridad</th>
+            <th>Asignado a</th>
+            <th>Verificado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for defect in defects %}
+            {% if defect.estado in ['Abierto', 'En progreso'] and not defect.verificado %}
+            <tr>
+              <td>{{ defect.id }}</td>
+              <td>{{ defect.test_case.nombre }}</td>
+              <td>{{ defect.titulo }}</td>
+              <td>{{ defect.estado }}</td>
+              <td>{{ defect.prioridad }}</td>
+              <td>{{ defect.assigned_to.username if defect.assigned_to else '-' }}</td>
+              <td class="text-center">
+                <span class="text-danger">&#10008;</span>
+              </td>
+              <td>
+                <a href="{{ url_for('defects_bp.edit', id=defect.id) }}" class="btn btn-sm btn-secondary">Editar</a>
+                <form action="{{ url_for('defects_bp.delete', id=defect.id) }}" method="POST" style="display:inline-block;">
+                  <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CERRADOS PENDIENTES -->
+    <div class="tab-pane fade" id="cerrados" role="tabpanel">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Test Case</th>
+            <th>Título</th>
+            <th>Estado</th>
+            <th>Prioridad</th>
+            <th>Asignado a</th>
+            <th>Verificado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for defect in defects %}
+            {% if defect.estado == 'Cerrado' and not defect.verificado %}
+            <tr>
+              <td>{{ defect.id }}</td>
+              <td>{{ defect.test_case.nombre }}</td>
+              <td>{{ defect.titulo }}</td>
+              <td>{{ defect.estado }}</td>
+              <td>{{ defect.prioridad }}</td>
+              <td>{{ defect.assigned_to.username if defect.assigned_to else '-' }}</td>
+              <td class="text-center">
+                <span class="text-danger">&#10008;</span>
+              </td>
+              <td>
+                <a href="{{ url_for('defects_bp.edit', id=defect.id) }}" class="btn btn-sm btn-secondary">Editar</a>
+                <form action="{{ url_for('defects_bp.delete', id=defect.id) }}" method="POST" style="display:inline-block;">
+                  <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- RESUELTOS -->
+    <div class="tab-pane fade" id="resueltos" role="tabpanel">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Test Case</th>
+            <th>Título</th>
+            <th>Estado</th>
+            <th>Prioridad</th>
+            <th>Asignado a</th>
+            <th>Verificado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for defect in defects %}
+            {% if defect.estado == 'Cerrado' and defect.verificado %}
+            <tr>
+              <td>{{ defect.id }}</td>
+              <td>{{ defect.test_case.nombre }}</td>
+              <td>{{ defect.titulo }}</td>
+              <td>{{ defect.estado }}</td>
+              <td>{{ defect.prioridad }}</td>
+              <td>{{ defect.assigned_to.username if defect.assigned_to else '-' }}</td>
+              <td class="text-center">
+                <span class="text-success">&#10004;</span>
+              </td>
+              <td>
+                <a href="{{ url_for('defects_bp.edit', id=defect.id) }}" class="btn btn-sm btn-secondary">Editar</a>
+                <form action="{{ url_for('defects_bp.delete', id=defect.id) }}" method="POST" style="display:inline-block;">
+                  <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

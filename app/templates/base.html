@@ -37,6 +37,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-white fw-semibold" href="{{ url_for('epic_bp.index') }}">Épicas y HUs</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white fw-semibold" href="{{ url_for('test_bp.index') }}">Tests</a>
+                        </li>
+                        {% if 'admin' in session.roles or 'miembro' in session.roles %}
+                        <li class="nav-item">
+                        <a class="nav-link text-white fw-semibold" href="{{ url_for('defects_bp.index') }}">Defectos</a>
+                        </li>
+                        {% endif %}
                         {% if 'admin' in session.get('roles', []) %}
                         <li class="nav-item">
                             <a class="nav-link text-white fw-semibold" href="{{ url_for('user_bp.index') }}">Usuarios</a>

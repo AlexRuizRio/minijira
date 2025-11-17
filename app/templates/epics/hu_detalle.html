@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}{{ hu.nombre }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Cabecera -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold">{{ hu.nombre }}</h1>
+    <a href="{{ url_for('epic_bp.detalle_epic', id=hu.epica_id) if hu.epica_id else url_for('epic_bp.index') }}" class="btn btn-outline-secondary btn-sm">← Volver</a>
+  </div>
+
+  <!-- Información de la HU -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <p><strong>Descripción:</strong> {{ hu.descripcion }}</p>
+      <p><strong>Estado:</strong> {{ hu.estado.value|replace('_',' ')|capitalize }}</p>
+      <p><strong>Prioridad:</strong> {{ hu.prioridad.value|capitalize }}</p>
+    </div>
+  </div>
+
+  <!-- ================= TEST CASES ================= -->
+  <h2 class="mt-4">Test Cases Asociados</h2>
+  {% if hu.test_cases %}
+  <table class="table align-middle table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tc in hu.test_cases %}
+      <tr>
+        <td><a href="{{ url_for('epic_bp.detalle_test_case', id=tc.id) }}">{{ tc.nombre }}</a></td>
+        <td>{{ tc.tipo.value if tc.tipo else '—' }}</td>
+        <td>{{ tc.estado.value if tc.estado else '—' }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('epic_bp.remove_test_case', hu_id=hu.id, tc_id=tc.id) }}" style="display:inline;">
+            <button class="btn btn-sm btn-outline-danger" title="Eliminar relación">🗑️</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-muted fst-italic">No hay test cases asociados.</p>
+  {% endif %}
+
+  <!-- Botón para asociar Test Case -->
+  <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#modalAsociarTestCase">
+    + Asociar Test Case
+  </button>
+
+  <!-- Modal para asociar Test Case -->
+  <div class="modal fade" id="modalAsociarTestCase" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{{ url_for('epic_bp.asociar_test_case', hu_id=hu.id) }}">
+          <div class="modal-header">
+            <h5 class="modal-title">Asociar Test Case</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            {% if all_test_cases %}
+            <select class="form-select" name="test_case_id" required>
+              {% for tc in all_test_cases %}
+                {% if tc not in hu.test_cases %}
+                <option value="{{ tc.id }}">{{ tc.nombre }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            {% else %}
+            <p class="text-muted">No hay Test Cases disponibles.</p>
+            {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Asociar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TEST CYCLES ================= -->
+  <h2 class="mt-5">Test Cycles Asociados</h2>
+  {% if hu.test_cycles %}
+  <table class="table align-middle table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cycle in hu.test_cycles %}
+      <tr>
+        <td>{{ cycle.nombre }}</td>
+        <td>{{ cycle.estado.value if cycle.estado else '—' }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('epic_bp.remove_test_cycle', hu_id=hu.id, cycle_id=cycle.id) }}" style="display:inline;">
+            <button class="btn btn-sm btn-outline-danger" title="Eliminar relación">🗑️</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-muted fst-italic">No hay test cycles asociados.</p>
+  {% endif %}
+
+  <!-- Botón para asociar Test Cycle -->
+  <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#modalAsociarTestCycle">
+    + Asociar Test Cycle
+  </button>
+
+  <!-- Modal para asociar Test Cycle -->
+  <div class="modal fade" id="modalAsociarTestCycle" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{{ url_for('epic_bp.asociar_test_cycle', hu_id=hu.id) }}">
+          <div class="modal-header">
+            <h5 class="modal-title">Asociar Test Cycle</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            {% if all_test_cycles %}
+            <select class="form-select" name="test_cycle_id" required>
+              {% for cycle in all_test_cycles %}
+                {% if cycle not in hu.test_cycles %}
+                <option value="{{ cycle.id }}">{{ cycle.nombre }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            {% else %}
+            <p class="text-muted">No hay Test Cycles disponibles.</p>
+            {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Asociar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

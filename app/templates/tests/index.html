@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Tests - MiniJira{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Tests</h2>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="testTabs" role="tablist">
+  <li class="nav-item">
+    <button class="nav-link active" id="testcase-tab" data-bs-toggle="tab" data-bs-target="#testcase" type="button" role="tab">Test Cases</button>
+  </li>
+  <li class="nav-item">
+    <button class="nav-link" id="testcycle-tab" data-bs-toggle="tab" data-bs-target="#testcycle" type="button" role="tab">Test Cycles</button>
+  </li>
+</ul>
+
+
+<div class="tab-content">
+    <!-- Test Cases Tab -->
+    <div class="tab-pane fade show active" id="testcase" role="tabpanel">
+        <div class="mb-2">
+            <a href="{{ url_for('test_bp.create_test_case') }}" class="btn btn-primary btn-sm">+ Crear TestCase</a>
+        </div>
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Estado</th>
+                    <th>Último Resultado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tc in test_cases %}
+                <tr>
+                    <td>{{ tc.id }}</td>
+                    <td><a href="{{ url_for('test_bp.show', id=tc.id) }}">{{ tc.nombre }}</a></td>
+                    <td>{{ tc.estado.value }}</td>
+                    <td>
+                        {% if last_results[tc.id] %}
+                            {% set estado = last_results[tc.id].estado_prueba.value %}
+                            <span class="badge 
+                                {% if estado == 'pasado' %} bg-success
+                                {% elif estado == 'fallido' %} bg-danger
+                                {% elif estado == 'bloqueado' %} bg-warning text-dark
+                                {% endif %}">
+                                {{ estado | capitalize }}
+                            </span>
+                        {% else %}
+                            <span class="text-muted fst-italic">Sin resultados</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('test_bp.edit_test_case', id=tc.id) }}" class="btn btn-sm btn-secondary">Editar</a>
+                        <form action="{{ url_for('test_bp.delete_test_case', id=tc.id) }}" method="POST" style="display:inline-block;">
+                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+<!-- Test Cycles Tab -->
+<div class="tab-pane fade" id="testcycle" role="tabpanel">
+  <div class="mb-3">
+    <h4 class="fw-bold text-secondary mb-2">Test Cycles</h4>
+    <a href="{{ url_for('test_bp.create_cycle') }}" class="btn btn-primary btn-sm">+ Crear TestCycle</a>
+  </div>
+
+  <table class="table table-hover align-middle shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Creado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tc in test_cycles %}
+      <tr class="table-row-clickable" data-href="{{ url_for('test_bp.show_cycle', id=tc.id) }}">
+        <td>{{ tc.id }}</td>
+        <td class="fw-semibold">{{ tc.nombre }}</td>
+        <td>{{ tc.descripcion or '—' }}</td>
+        <td>
+          {% if tc.estado.value == 'nuevo' %}
+            <span class="badge bg-secondary">Nuevo</span>
+          {% elif tc.estado.value == 'en_progreso' %}
+            <span class="badge bg-warning text-dark">En progreso</span>
+          {% else %}
+            <span class="badge bg-success">Terminado</span>
+          {% endif %}
+        </td>
+        <td>{{ tc.fecha_created.strftime('%d/%m/%Y') if tc.fecha_created else '—' }}</td>
+        <td>
+          <div class="btn-group btn-group-sm" role="group">
+            <a href="{{ url_for('test_bp.edit_cycle', id=tc.id) }}" class="btn btn-outline-secondary">Editar</a>
+            <form action="{{ url_for('test_bp.delete_cycle', id=tc.id) }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-outline-danger">Eliminar</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Script para hacer clic en toda la fila -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.table-row-clickable').forEach(row => {
+      row.addEventListener('click', () => {
+        window.location = row.dataset.href;
+      });
+    });
+  });
+</script>
+
+
+{% endblock %}

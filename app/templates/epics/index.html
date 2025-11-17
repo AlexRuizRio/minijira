@@ -5,6 +5,11 @@
 {% block content %}
 <h1>Épicas - Historias de Usuario</h1>
 
+<!-- Botón para crear nueva Épica/HU -->
+<button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#modalCrearEpicHU">
+    <i class="bi bi-plus-circle"></i> Crear Épica / Historia
+</button>
+
 <div class="epics-container">
     {% for epic in epics %}
         <div class="epic-card">
@@ -31,4 +36,80 @@
         </div>
     {% endfor %}
 </div>
+
+<!-- Modal Crear Épica / HU -->
+<div class="modal fade" id="modalCrearEpicHU" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{{ url_for('epic_bp.crear_epic_hu') }}">
+        <div class="modal-header">
+          <h5 class="modal-title">Crear Épica / Historia de Usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" name="nombre" id="nombre" required>
+            </div>
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control" name="descripcion" id="descripcion" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo</label>
+                <select class="form-select" name="tipo" id="tipo" required>
+                    <option value="EPIC">Épica</option>
+                    <option value="HU">Historia de Usuario</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="prioridad" class="form-label">Prioridad</label>
+                <select class="form-select" name="prioridad" id="prioridad">
+                    <option value="BAJA">Baja</option>
+                    <option value="MEDIA">Media</option>
+                    <option value="ALTA">Alta</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-select" name="estado" id="estado">
+                    <option value="NUEVO">Nuevo</option>
+                    <option value="EN_PROGRESO">En Progreso</option>
+                    <option value="TERMINADO">Terminado</option>
+                </select>
+            </div>
+            <!-- Si es HU, se puede asociar a una épica existente -->
+            <div class="mb-3" id="epica-select-container" style="display:none;">
+                <label for="epica_id" class="form-label">Asignar a Épica</label>
+                <select class="form-select" name="epica_id" id="epica_id">
+                    <option value="">-- Ninguna --</option>
+                    {% for epic_option in epics %}
+                        <option value="{{ epic_option.id }}">{{ epic_option.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Crear</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mostrar select de épica solo si se elige HU
+  const tipoSelect = document.getElementById('tipo');
+  const epicaContainer = document.getElementById('epica-select-container');
+
+  tipoSelect.addEventListener('change', function() {
+      if (this.value === 'HU') {
+          epicaContainer.style.display = 'block';
+      } else {
+          epicaContainer.style.display = 'none';
+      }
+  });
+</script>
+
 {% endblock %}

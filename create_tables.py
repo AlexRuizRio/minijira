@@ -138,8 +138,9 @@ with app.app_context():
             estado=EstadoEnum.NUEVO
         )
 
-        db.session.add_all([e4, e5, e6, e7, e8])
+        db.session.add_all([e1, e2, e3, e4, e5, e6, e7, e8])
         db.session.commit()
+
 
         # --- Crear Test Cases ---
         t1 = TestCase(nombre="Test de autenticación", objetivo="Verifica login correcto")
