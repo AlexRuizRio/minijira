@@ -4,6 +4,7 @@ from app.models.testcase_model import TestCase, EstadoEnum, PrioridadEnum, TipoT
 from app.models.testcycle_model import TestCycle
 from app.models.result_model import Result
 from app.models.testcycle_model import EstadoEnum as EstadoCycleEnum
+from sqlalchemy.orm import joinedload
 
 test_bp = Blueprint('test_bp', __name__)
 
@@ -184,8 +185,23 @@ def delete_cycle(id):
 @test_bp.route('/testcycle/<int:id>')
 def show_cycle(id):
     cycle = TestCycle.query.get_or_404(id)
+    
+    last_results = {}
+    for r in cycle.resultados:
+        if r.test_case_id not in last_results:
+            last_results[r.test_case_id] = r
+        else:
+            if r.fecha_created > last_results[r.test_case_id].fecha_created:
+                last_results[r.test_case_id] = r
+
     all_cases = TestCase.query.all()
-    return render_template('test_cycles/show.html', cycle=cycle, all_cases=all_cases)
+
+    return render_template(
+        'test_cycles/show.html',
+        cycle=cycle,
+        last_results=last_results,
+        all_cases=all_cases
+    )
 
 
 # Agregar un TestCase al ciclo

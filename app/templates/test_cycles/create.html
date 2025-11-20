@@ -8,12 +8,12 @@
   <form method="POST">
     <div class="row g-3">
       <div class="col-md-6">
-        <label class="form-label">Nombre</label>
+        <label for="nombre" class="form-label">Nombre</label>
         <input type="text" name="nombre" class="form-control" required>
       </div>
 
       <div class="col-md-6">
-        <label class="form-label">Estado</label>
+        <label for="estado" class="form-label">Estado</label>
         <select name="estado" class="form-select">
             {% for estado in estados %}
                 <option value="{{ estado.name }}">{{ estado.value.replace('_', ' ') | capitalize }}</option>
@@ -22,7 +22,7 @@
       </div>
 
       <div class="col-12">
-        <label class="form-label">Descripción</label>
+        <label for="descripcion" class="form-label">Descripción</label>
         <textarea name="descripcion" class="form-control" rows="4" placeholder="Describe brevemente el objetivo del ciclo..."></textarea>
       </div>
     </div>

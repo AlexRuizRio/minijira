@@ -14,12 +14,21 @@ class Project(db.Model):
     fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
     fecha_fin = db.Column(db.DateTime, nullable=True)
 
-    # 🔹 Usuario que creó el proyecto
+    # Usuario que creó el proyecto
     user_created = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     creador = db.relationship('User', back_populates='proyectos_creados')
 
     # Relación con EpicHU
     epics = db.relationship('EpicHU', back_populates='proyecto', lazy=True)
 
+    @property
+    def epicas(self):
+        return [e for e in self.epics if e.tipo.value.lower() == "epic"]
+
+    @property
+    def hus_sueltas(self):
+        return [e for e in self.epics if e.tipo.value.lower() == "hu" and e.epica_id is None]
+
+    
     def __repr__(self):
         return f"<Proyecto {self.nombre}>"

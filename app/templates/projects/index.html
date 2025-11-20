@@ -1,24 +1,30 @@
 {% extends "base.html" %}
-
-{% block title %}Dashboard - Mini Jira{% endblock %}
+{% block title %}Proyectos{% endblock %}
 
 {% block content %}
-<h1>Dashboard de Proyectos</h1>
-
+<h1>Proyectos</h1>
+{% if 'admin' in session.roles or 'miembro' in session.roles %}
+    <a href="{{ url_for('project_bp.nuevo_proyecto') }}" class="btn btn-primary mb-3">
+        + Crear Proyecto
+    </a>
+{% endif %}
 <div class="dashboard-container">
     {% for proyecto in proyectos %}
-    <div class="project-card">
-        <h2>{{ proyecto.nombre }}</h2>
-        <p class="description">{{ proyecto.descripcion }}</p>
-        <p class="stats">
-            Epics: {{ proyecto.epics|length }} | Historias: {{ proyecto.hu|length }}
-        </p>
-        <p class="estado {{ proyecto.estado|lower }}">{{ proyecto.estado }}</p>
-        <div class="buttons">
-            <a href="{{ url_for('project_bp.detalle_proyecto', id=proyecto.id) }}" class="btn btn-primary">Ver detalle</a>
-            <a href="#" class="btn btn-secondary">Editar</a>
-        </div>
-    </div>
+        <a href="{{ url_for('project_bp.detalle_proyecto', id=proyecto.id) }}" class="project-card project-link">
+            <h2>{{ proyecto.nombre }}</h2>
+            <p class="description">{{ proyecto.descripcion }}</p>
+
+            <p class="stats">
+                Epics: {{ proyecto.epics|length }} |
+                HUs: {{ proyecto.hus|length if proyecto.hus else 0 }}
+            </p>
+        </a>
     {% endfor %}
 </div>
+
+<style>
+.project-link { text-decoration: none; color: inherit; }
+.project-card:hover { transform: scale(1.02); transition: .2s; cursor: pointer; }
+</style>
+
 {% endblock %}

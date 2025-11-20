@@ -15,7 +15,7 @@
         </head>
         <body class="bg-light">
 
-        <!-- ✅ Encabezado principal -->
+        <!-- Encabezado principal -->
         <header class="bg-primary text-white shadow-sm sticky-top">
             <div class="container-fluid d-flex justify-content-between align-items-center py-2 px-4 flex-wrap">
 
@@ -27,7 +27,7 @@
                     <h1 class="h4 m-0 fw-bold">MiniJira</h1>
                 </div>
 
-                <!-- 🧭 Centro: Menú solo si está logueado -->
+                <!-- Centro: Menú solo si está logueado -->
                 {% if session.get('user_id') %}
                 <nav class="d-none d-md-block">
                     <ul class="nav justify-content-center">
@@ -40,11 +40,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-white fw-semibold" href="{{ url_for('test_bp.index') }}">Tests</a>
                         </li>
-                        {% if 'admin' in session.roles or 'miembro' in session.roles %}
+
                         <li class="nav-item">
                         <a class="nav-link text-white fw-semibold" href="{{ url_for('defects_bp.index') }}">Defectos</a>
                         </li>
-                        {% endif %}
+
                         {% if 'admin' in session.get('roles', []) %}
                         <li class="nav-item">
                             <a class="nav-link text-white fw-semibold" href="{{ url_for('user_bp.index') }}">Usuarios</a>
@@ -54,7 +54,7 @@
                 </nav>
                 {% endif %}
 
-                <!-- 👤 Derecha: Usuario + logout -->
+                <!-- Derecha: Usuario + logout -->
                 {% if session.get('user_id') %}
                 <div class="d-flex align-items-center gap-3">
                     <span class="fw-semibold">
@@ -69,7 +69,7 @@
             </div>
         </header>
 
-        <!-- ✅ Contenido -->
+        <!--  Contenido -->
         <main class="container my-4">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}

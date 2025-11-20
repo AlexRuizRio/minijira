@@ -3,20 +3,37 @@
 {% block content %}
 <div class="container mt-4">
   <h2 class="fw-bold mb-4">Lista de Defectos</h2>
-  <a href="{{ url_for('defects_bp.create', result_id=0) }}" class="btn btn-primary mb-3">Nuevo Defecto</a>
+    {% if 'admin' in session.roles or 'miembro' in session.roles %}
+    <a href="{{ url_for('defects_bp.create', result_id=0) }}" class="btn btn-primary mb-3">Nuevo Defecto</a>
+    {% endif %}
 
-  <!-- Tabs -->
-  <ul class="nav nav-tabs mb-3" id="defectTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="pendientes-tab" data-bs-toggle="tab" data-bs-target="#pendientes" type="button" role="tab">Pendientes</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="cerrados-tab" data-bs-toggle="tab" data-bs-target="#cerrados" type="button" role="tab">Cerrados pendientes</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="resueltos-tab" data-bs-toggle="tab" data-bs-target="#resueltos" type="button" role="tab">Resueltos</button>
-    </li>
-  </ul>
+<ul class="nav nav-tabs mb-3" id="defectTabs">
+  <li class="nav-item">
+    <button class="nav-link active" id="pendientes-tab"
+            data-bs-toggle="tab" data-bs-target="#pendientes"
+            type="button" role="tab">
+      Pendientes
+    </button>
+  </li>
+
+  <li class="nav-item">
+    <button class="nav-link" id="cerrados-tab"
+            data-bs-toggle="tab" data-bs-target="#cerrados"
+            type="button" role="tab">
+      Cerrados pendientes
+    </button>
+  </li>
+
+  <li class="nav-item">
+    <button class="nav-link" id="resueltos-tab"
+            data-bs-toggle="tab" data-bs-target="#resueltos"
+            type="button" role="tab">
+      Resueltos
+    </button>
+  </li>
+</ul>
+
+
 
   <div class="tab-content" id="defectTabsContent">
     <!-- PENDIENTES -->
@@ -31,7 +48,9 @@
             <th>Prioridad</th>
             <th>Asignado a</th>
             <th>Verificado</th>
+            {% if 'admin' in session.roles or 'miembro' in session.roles %}
             <th>Acciones</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -47,12 +66,14 @@
               <td class="text-center">
                 <span class="text-danger">&#10008;</span>
               </td>
+                {% if 'admin' in session.roles or 'miembro' in session.roles %}
               <td>
                 <a href="{{ url_for('defects_bp.edit', id=defect.id) }}" class="btn btn-sm btn-secondary">Editar</a>
                 <form action="{{ url_for('defects_bp.delete', id=defect.id) }}" method="POST" style="display:inline-block;">
                   <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                 </form>
               </td>
+              {% endif %}
             </tr>
             {% endif %}
           {% endfor %}
@@ -72,7 +93,9 @@
             <th>Prioridad</th>
             <th>Asignado a</th>
             <th>Verificado</th>
+            {% if 'admin' in session.roles or 'miembro' in session.roles %}
             <th>Acciones</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -88,12 +111,14 @@
               <td class="text-center">
                 <span class="text-danger">&#10008;</span>
               </td>
-              <td>
-                <a href="{{ url_for('defects_bp.edit', id=defect.id) }}" class="btn btn-sm btn-secondary">Editar</a>
-                <form action="{{ url_for('defects_bp.delete', id=defect.id) }}" method="POST" style="display:inline-block;">
-                  <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                </form>
-              </td>
+                {% if 'admin' in session.roles or 'miembro' in session.roles %}
+                    <td>
+                        <a href="{{ url_for('defects_bp.edit', id=defect.id) }}" class="btn btn-sm btn-secondary">Editar</a>
+                        <form action="{{ url_for('defects_bp.delete', id=defect.id) }}" method="POST" style="display:inline-block;">
+                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                {% endif %}
             </tr>
             {% endif %}
           {% endfor %}
@@ -113,7 +138,9 @@
             <th>Prioridad</th>
             <th>Asignado a</th>
             <th>Verificado</th>
+            {% if 'admin' in session.roles or 'miembro' in session.roles %}
             <th>Acciones</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -129,12 +156,14 @@
               <td class="text-center">
                 <span class="text-success">&#10004;</span>
               </td>
-              <td>
-                <a href="{{ url_for('defects_bp.edit', id=defect.id) }}" class="btn btn-sm btn-secondary">Editar</a>
-                <form action="{{ url_for('defects_bp.delete', id=defect.id) }}" method="POST" style="display:inline-block;">
-                  <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                </form>
-              </td>
+                {% if 'admin' in session.roles or 'miembro' in session.roles %}
+                <td>
+                    <a href="{{ url_for('defects_bp.edit', id=defect.id) }}" class="btn btn-sm btn-secondary">Editar</a>
+                    <form action="{{ url_for('defects_bp.delete', id=defect.id) }}" method="POST" style="display:inline-block;">
+                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+                </td>
+                {% endif %}
             </tr>
             {% endif %}
           {% endfor %}

@@ -6,6 +6,10 @@
   <!-- ENCABEZADO -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold text-primary">{{ test_case.nombre }}</h2>
+    <form action="{{ url_for('automatizacion.run_test', id=test_case.id) }}" method="POST">
+        <button class="btn btn-success">▶ Ejecutar Test Automatizado</button>
+    </form>
+
     <a href="{{ url_for('test_bp.index') }}" class="btn btn-outline-secondary btn-sm">← Volver</a>
   </div>
 
@@ -92,9 +96,11 @@
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="card-title text-secondary mb-0">Historial de Resultados</h5>
+        {% if 'admin' in session.roles or 'miembro' in session.roles %}
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalNuevoResultado">
           <i class="bi bi-plus-circle"></i> Nuevo Resultado
         </button>
+        {% endif %}
       </div>
 
       {% if test_case.resultados %}
@@ -146,6 +152,7 @@
   </div>
 </div>
 
+{% if 'admin' in session.roles or 'miembro' in session.roles %}
 <!-- MODAL NUEVO RESULTADO -->
 <div class="modal fade" id="modalNuevoResultado" tabindex="-1" aria-labelledby="nuevoResultadoLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -243,7 +250,7 @@
     </div>
   </div>
 </div>
-
+{% endif %}
 <!-- Script: mostrar checkbox solo si el estado es fallido -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {

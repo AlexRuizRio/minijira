@@ -33,7 +33,7 @@ def create(test_case_id):
     notas = request.form.get('notas')
 
     test_cycle_id = request.form.get('test_cycle_id')
-    crear_defecto_auto = 'crear_defecto_auto' in request.form  # ✅ checkbox
+    crear_defecto_auto = 'crear_defecto_auto' in request.form  # checkbox
 
     nuevo_resultado = Result(
         test_case_id=test_case.id,

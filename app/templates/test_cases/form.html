@@ -6,31 +6,33 @@
   <h2 class="fw-bold mb-4">{{ 'Editar' if test_case else 'Nuevo' }} Test Case</h2>
 
   <form method="POST">
+
     <div class="mb-3">
-      <label class="form-label">Nombre</label>
-      <input type="text" name="nombre" class="form-control" required
+      <label for="nombre" class="form-label">Nombre</label>
+      <input id="nombre" type="text" name="nombre" class="form-control" required
              value="{{ test_case.nombre if test_case else '' }}">
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Objetivo</label>
-      <textarea name="objetivo" class="form-control" rows="2">{{ test_case.objetivo if test_case else '' }}</textarea>
+      <label for="objetivo" class="form-label">Objetivo</label>
+      <textarea id="objetivo" name="objetivo" class="form-control" rows="2">{{ test_case.objetivo if test_case else '' }}</textarea>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Precondición</label>
-      <textarea name="precondicion" class="form-control" rows="2">{{ test_case.precondicion if test_case else '' }}</textarea>
+      <label for="precondicion" class="form-label">Precondición</label>
+      <textarea id="precondicion" name="precondicion" class="form-control" rows="2">{{ test_case.precondicion if test_case else '' }}</textarea>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Descripción</label>
-      <textarea name="descripcion" class="form-control" rows="3">{{ test_case.descripcion if test_case else '' }}</textarea>
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea id="descripcion" name="descripcion" class="form-control" rows="3">{{ test_case.descripcion if test_case else '' }}</textarea>
     </div>
 
     <div class="row">
+
       <div class="col-md-4 mb-3">
-        <label class="form-label">Estado</label>
-        <select name="estado" class="form-select" required>
+        <label for="estado" class="form-label">Estado</label>
+        <select id="estado" name="estado" class="form-select" required>
           {% for e in EstadoEnum %}
           <option value="{{ e.value }}" {% if test_case and test_case.estado == e %}selected{% endif %}>
             {{ e.value | replace('_',' ') | capitalize }}
@@ -40,8 +42,8 @@
       </div>
 
       <div class="col-md-4 mb-3">
-        <label class="form-label">Prioridad</label>
-        <select name="prioridad" class="form-select" required>
+        <label for="prioridad" class="form-label">Prioridad</label>
+        <select id="prioridad" name="prioridad" class="form-select" required>
           {% for p in PrioridadEnum %}
           <option value="{{ p.value }}" {% if test_case and test_case.prioridad == p %}selected{% endif %}>
             {{ p.value | capitalize }}
@@ -51,8 +53,8 @@
       </div>
 
       <div class="col-md-4 mb-3">
-        <label class="form-label">Tipo</label>
-        <select name="tipo" class="form-select" required>
+        <label for="tipo" class="form-label">Tipo</label>
+        <select id="tipo" name="tipo" class="form-select" required>
           {% for t in TipoTestEnum %}
           <option value="{{ t.value }}" {% if test_case and test_case.tipo == t %}selected{% endif %}>
             {{ t.value | capitalize }}
@@ -60,11 +62,12 @@
           {% endfor %}
         </select>
       </div>
+
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Test Script</label>
-      <textarea name="test_script" class="form-control" rows="4">{{ test_case.test_script if test_case else '' }}</textarea>
+      <label for="test_script" class="form-label">Test Script</label>
+      <textarea id="test_script" name="test_script" class="form-control" rows="4">{{ test_case.test_script if test_case else '' }}</textarea>
     </div>
 
     <button type="submit" class="btn btn-primary">Guardar</button>

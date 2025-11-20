@@ -9,19 +9,20 @@
 
   {% if 'admin' in user_roles or defect.assigned_to_id == user_id %}
   <form method="POST">
+
     <div class="mb-3">
-      <label class="form-label">Título</label>
-      <input type="text" name="titulo" value="{{ defect.titulo }}" class="form-control" required>
+      <label for="titulo" class="form-label">Título</label>
+      <input id="titulo" type="text" name="titulo" value="{{ defect.titulo }}" class="form-control" required>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Descripción</label>
-      <textarea name="descripcion" class="form-control" rows="4">{{ defect.descripcion }}</textarea>
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea id="descripcion" name="descripcion" class="form-control" rows="4">{{ defect.descripcion }}</textarea>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Estado</label>
-      <select name="estado" class="form-select">
+      <label for="estado" class="form-label">Estado</label>
+      <select id="estado" name="estado" class="form-select">
         {% for estado in ['Abierto', 'En progreso', 'Cerrado'] %}
         <option value="{{ estado }}" {% if defect.estado == estado %}selected{% endif %}>{{ estado }}</option>
         {% endfor %}
@@ -29,8 +30,8 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Prioridad</label>
-      <select name="prioridad" class="form-select">
+      <label for="prioridad" class="form-label">Prioridad</label>
+      <select id="prioridad" name="prioridad" class="form-select">
         {% for p in ['Baja', 'Media', 'Alta'] %}
         <option value="{{ p }}" {% if defect.prioridad == p %}selected{% endif %}>{{ p }}</option>
         {% endfor %}
@@ -38,8 +39,8 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Asignar a</label>
-      <select name="assigned_to" class="form-select">
+      <label for="assigned_to" class="form-label">Asignar a</label>
+      <select id="assigned_to" name="assigned_to" class="form-select">
         <option value="">-- Sin asignar --</option>
         {% for usuario in usuarios %}
         <option value="{{ usuario.id }}" {% if defect.assigned_to_id == usuario.id %}selected{% endif %}>
@@ -49,15 +50,15 @@
       </select>
     </div>
 
-    <!-- Sólo permitir cambiar 'verificado' si no tiene test_case ni result asociados -->
     {% if not defect.test_case_id and not defect.result_id %}
     <div class="mb-3 form-check">
         <input class="form-check-input" type="checkbox" id="verificado" name="verificado" value="1"
-            {% if defect.verificado %}checked{% endif %}>
-        <label class="form-check-label" for="verificado">Verificado (marcar si el defecto está resuelto y comprobado)</label>
+          {% if defect.verificado %}checked{% endif %}>
+        <label class="form-check-label" for="verificado">
+          Verificado (marcar si el defecto está resuelto y comprobado)
+        </label>
     </div>
     {% endif %}
-
 
     <button type="submit" class="btn btn-primary">Guardar cambios</button>
     <a href="{{ url_for('defects_bp.index') }}" class="btn btn-secondary">Volver</a>

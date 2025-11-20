@@ -1,17 +1,123 @@
-    {% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
 
-    {% block title %}{{ proyecto.nombre }} - Mini Jira{% endblock %}
-
-    {% block content %}
+{% block content %}
     <h1>{{ proyecto.nombre }}</h1>
+    {% if 'admin' in session.roles or 'miembro' in session.roles %}
+        <div class="mb-4 d-flex gap-2">
+            <a href="{{ url_for('project_bp.editar_proyecto', id=proyecto.id) }}" 
+            class="btn btn-warning btn-sm">
+                Editar
+            </a>
+
+            <a href="{{ url_for('project_bp.eliminar_proyecto', id=proyecto.id) }}"
+            class="btn btn-danger btn-sm"
+            onclick="return confirm('¿Seguro que quieres eliminar este proyecto? Esta acción no se puede deshacer.');">
+                Eliminar
+            </a>
+
+            <a href="{{ url_for('project_bp.index') }}" class="btn btn-secondary btn-sm">
+                Volver
+            </a>
+        </div>
+    {% endif %}
     <p>{{ proyecto.descripcion }}</p>
 
-    <h2>Epics / Historias</h2>
-    <ul>
-        {% for epic in epics %}
-            <li>{{ epic.nombre }} ({{ epic.tipo }})</li>
-        {% endfor %}
-    </ul>
+    <div class="project-layout">
 
-    <a href="{{ url_for('project_bp.index') }}">← Volver a proyectos</a>
-    {% endblock %}
+    <!-- BLOQUE 1: EPICS + HUs -->
+    <div class="project-block epics-block">
+        <h2>Épicas y Historias</h2>
+
+        {% for item in epics_con_hus %}
+            <a class="epic-card d-block text-decoration-none"
+            href="{{ url_for('epic_bp.detalle_epic', id=item.epic.id) }}">
+                
+                <h3>{{ item.epic.nombre }}</h3>
+                <p>{{ item.epic.descripcion }}</p>
+
+                {% for hu in item.hus %}
+                    <a class="hu-card d-block text-decoration-none"
+                    href="{{ url_for('epic_bp.detalle_hu', id=hu.id) }}">
+                    
+                        <strong>{{ hu.nombre }}</strong>
+                        <p>{{ hu.descripcion }}</p>
+                    </a>
+                {% endfor %}
+            </a>
+        {% endfor %}
+
+{% for hu in hus_sueltas %}
+    <a class="hu-card d-block text-decoration-none"
+       href="{{ url_for('epic_bp.detalle_hu', id=hu.id) }}">
+        
+        <strong>{{ hu.nombre }}</strong>
+        <p>{{ hu.descripcion }}</p>
+    </a>
+{% endfor %}
+
+
+    </div>
+
+    <!-- BLOQUE 2: TEST CASES + TEST CYCLES -->
+    <div class="project-grid">
+
+        <!-- Test Cases -->
+        <div class="project-block">
+            <h2>Test Cases</h2>
+
+            {% for item in epics_con_hus %}
+                {% for hu in item.hus %}
+                    {% for tc in hu.test_cases %}
+                        <a class="tc-card" href="{{ url_for('test_bp.show', id=tc.id) }}">
+                            <h3>{{ tc.nombre }}</h3>
+                            <p>{{ tc.descripcion }}</p>
+                            <p><strong>Estado:</strong> {{ tc.estado.value }}</p>
+                        </a>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+
+            {% for hu in hus_sueltas %}
+                {% for tc in hu.test_cases %}
+                    <a class="tc-card" href="{{ url_for('test_bp.show', id=tc.id) }}">
+                        <h3>{{ tc.nombre }}</h3>
+                        <p>{{ tc.descripcion }}</p>
+                        <p><strong>Estado:</strong> {{ tc.estado.value }}</p>
+                    </a>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <!-- Test Cycles -->
+        <div class="project-block">
+            <h2>Test Cycles</h2>
+
+            {% for item in epics_con_hus %}
+                {% for hu in item.hus %}
+                    {% for cycle in hu.test_cycles %}
+                       <a class="cycle-card" href="{{ url_for('test_bp.show_cycle', id=cycle.id) }}">
+                            <h3>{{ cycle.nombre }}</h3>
+                            <p>{{ cycle.descripcion }}</p>
+                            <p><strong>Estado:</strong> {{ cycle.estado.value }}</p>
+                        </a>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+
+            {% for hu in hus_sueltas %}
+                {% for cycle in hu.test_cycles %}
+                   <a class="cycle-card" href="{{ url_for('test_bp.show_cycle', id=cycle.id) }}">
+                        <h3>{{ cycle.nombre }}</h3>
+                        <p>{{ cycle.descripcion }}</p>
+                        <p><strong>Estado:</strong> {{ cycle.estado.value }}</p>
+                    </a>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}

@@ -10,7 +10,6 @@ defects_bp = Blueprint('defects_bp', __name__, url_prefix='/defects')
 
 
 @defects_bp.route('/')
-@role_required('admin', 'miembro', redirect_to='project_bp.index')
 def index():
     user_roles = session.get('roles', [])
     user_id = session.get('user_id')
@@ -55,31 +54,44 @@ def create(result_id):
 
 
 
+def user_can_edit(defect, user_roles, user_id):
+    return 'admin' in user_roles or defect.assigned_to_id == user_id
+
+
+def update_defect_basic_fields(defect, form):
+    defect.titulo = form['titulo']
+    defect.descripcion = form['descripcion']
+    defect.estado = form['estado']
+    defect.prioridad = form['prioridad']
+
+    assigned_to = form.get('assigned_to')
+    defect.assigned_to_id = int(assigned_to) if assigned_to else None
+
+
+def update_verificado(defect, form):
+    # Si no está ligado a TestCase/Result → editable manual
+    if not defect.test_case_id and not defect.result_id:
+        defect.verificado = bool(form.get('verificado'))
+        return
+
+    # Si está ligado → verificado se fuerza a False al cerrar
+    if defect.estado.lower() == 'cerrado':
+        defect.verificado = False
+
+
 @defects_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
 @role_required('admin', 'miembro')
 def edit(id):
     defect = Defect.query.get_or_404(id)
     usuarios = User.query.all()
+
     user_roles = session.get('roles', [])
     user_id = session.get('user_id')
 
     if request.method == 'POST':
-        # permisos: admin o usuario asignado
-        if 'admin' in user_roles or defect.assigned_to_id == user_id:
-            defect.titulo = request.form['titulo']
-            defect.descripcion = request.form['descripcion']
-            defect.estado = request.form['estado']
-            defect.prioridad = request.form['prioridad']
-            assigned_to = request.form.get('assigned_to')
-            defect.assigned_to_id = int(assigned_to) if assigned_to else None
-
-            # Si el defecto NO está ligado a TestCase/Result, permitimos cambiar verificado manualmente
-            if not defect.test_case_id and not defect.result_id:
-                defect.verificado = True if request.form.get('verificado') else False
-            else:
-                # Si está ligado, forzamos verificado = False al cerrarlo (se gestionará al crear Result pasados)
-                if defect.estado.lower() == "cerrado":
-                    defect.verificado = False
+        if user_can_edit(defect, user_roles, user_id):
+            update_defect_basic_fields(defect, request.form)
+            update_verificado(defect, request.form)
 
             db.session.commit()
             flash("Defecto actualizado correctamente.", "success")
@@ -89,6 +101,7 @@ def edit(id):
         return redirect(url_for('defects_bp.index'))
 
     return render_template('defects/edit.html', defect=defect, usuarios=usuarios)
+
 
 
 @defects_bp.route('/<int:id>/delete', methods=['POST'])

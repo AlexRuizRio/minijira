@@ -8,12 +8,12 @@
   <form method="POST">
     <div class="row g-3">
       <div class="col-md-6">
-        <label class="form-label">Nombre</label>
+        <label for="nombre" class="form-label">Nombre</label>
         <input type="text" name="nombre" class="form-control" value="{{ cycle.nombre }}" required>
       </div>
 
       <div class="col-md-6">
-        <label class="form-label">Estado</label>
+        <label for="estado" class="form-label">Estado</label>
         <select name="estado" class="form-select">
           {% for estado in ['nuevo', 'en_progreso', 'terminado'] %}
           <option value="{{ estado }}" {% if cycle.estado.value == estado %}selected{% endif %}>
@@ -24,7 +24,7 @@
       </div>
 
       <div class="col-12">
-        <label class="form-label">Descripción</label>
+        <label for="descripcion" class="form-label">Descripción</label>
         <textarea name="descripcion" class="form-control" rows="4">{{ cycle.descripcion }}</textarea>
       </div>
     </div>

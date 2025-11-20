@@ -5,6 +5,7 @@ from app.models.epic_hu_model import EpicHU, TipoEnum, EstadoEnum, PrioridadEnum
 from app import db
 
 epic_bp = Blueprint('epic_bp', __name__)
+URL_DETALLE = 'epic_bp.detalle_hu'
 
 # --- LISTADO DE ÉPICAS ---
 @epic_bp.route('/epics')
@@ -17,10 +18,8 @@ def index():
 def detalle_epic(id):
     epic = EpicHU.query.get_or_404(id)
 
-    # Historias asociadas a esta épica
     hus = EpicHU.query.filter_by(epica_id=id).all()
 
-    # Historias disponibles (de tipo HU, sin épica asignada)
     all_hus = EpicHU.query.filter(
         EpicHU.tipo == TipoEnum.HU,
         EpicHU.epica_id.is_(None)
@@ -65,7 +64,7 @@ def asociar_test_case(hu_id):
             db.session.commit()
             flash(f"Test Case '{tc.nombre}' asociado correctamente.", "success")
 
-    return redirect(url_for('epic_bp.detalle_hu', id=hu_id))
+    return redirect(url_for(URL_DETALLE, id=hu_id))
 
 # --- DETALLE DE TEST CASE ---
 @epic_bp.route('/tests/<int:id>')
@@ -88,7 +87,7 @@ def asociar_test_cycle(hu_id):
             db.session.commit()
             flash(f"Test Cycle '{tc.nombre}' asociado correctamente.", "success")
 
-    return redirect(url_for('epic_bp.detalle_hu', id=hu_id))
+    return redirect(url_for(URL_DETALLE, id=hu_id))
 
 # --- DESASOCIAR TEST CASE DE HU ---
 @epic_bp.route('/hu/<int:hu_id>/remove_test_case/<int:tc_id>', methods=['POST'])
@@ -99,7 +98,7 @@ def remove_test_case(hu_id, tc_id):
         hu.test_cases.remove(tc)
         db.session.commit()
         flash(f"Relación con el Test Case '{tc.nombre}' eliminada.", "info")
-    return redirect(url_for('epic_bp.detalle_hu', id=hu_id))
+    return redirect(url_for(URL_DETALLE, id=hu_id))
 
 # --- DESASOCIAR TEST CYCLE DE HU ---
 @epic_bp.route('/hu/<int:hu_id>/remove_test_cycle/<int:cycle_id>', methods=['POST'])
@@ -111,7 +110,7 @@ def remove_test_cycle(hu_id, cycle_id):
         hu.test_cycles.remove(cycle)
         db.session.commit()
         flash(f"Relación con el Test Cycle '{cycle.nombre}' eliminada.", "info")
-    return redirect(url_for('epic_bp.detalle_hu', id=hu_id))
+    return redirect(url_for(URL_DETALLE, id=hu_id))
 
 @epic_bp.route('/crear_epic_hu', methods=['POST'])
 def crear_epic_hu():

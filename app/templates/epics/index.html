@@ -6,9 +6,11 @@
 <h1>Épicas - Historias de Usuario</h1>
 
 <!-- Botón para crear nueva Épica/HU -->
-<button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#modalCrearEpicHU">
-    <i class="bi bi-plus-circle"></i> Crear Épica / Historia
-</button>
+{% if 'admin' in session.roles or 'miembro' in session.roles %}
+    <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#modalCrearEpicHU">
+        <i class="bi bi-plus-circle"></i> Crear Épica / Historia
+    </button>
+{% endif %}
 
 <div class="epics-container">
     {% for epic in epics %}

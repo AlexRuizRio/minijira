@@ -36,7 +36,9 @@ def create_app(test_config=None):
     from app.controllers.test_controller import test_bp
     from app.controllers.results_controller import results_bp
     from app.controllers.defects_controller import defects_bp
+    from app.controllers.automatizacion_controller import automatizacion_bp
 
+    app.register_blueprint(automatizacion_bp)
     app.register_blueprint(defects_bp)
     app.register_blueprint(results_bp)
     app.register_blueprint(test_bp)
