@@ -5,7 +5,8 @@
 <div class="container mt-4">
   <h2 class="fw-bold text-primary mb-4">Editar Resultado</h2>
 
-  <form method="POST">
+  <!-- IMPORTANTE: ahora soporta archivos -->
+  <form method="POST" enctype="multipart/form-data">
     <div class="row g-3">
 
        <!-- Estado -->
@@ -26,12 +27,6 @@
             <input type="text" id="entorno" class="form-control" name="entorno" value="{{ result.entorno or '' }}">
         </div>
 
-        <!-- URL -->
-        <div class="col-md-6">
-            <label class="form-label" for="url">URL</label>
-            <input type="text" id="url" class="form-control" name="url" value="{{ result.url or '' }}">
-        </div>
-
         <!-- Usuario -->
         <div class="col-md-6">
             <label class="form-label" for="usu_created">Usuario</label>
@@ -39,53 +34,42 @@
                 value="{{ result.usu_created or (current_user.nombre if current_user else '') }}">
         </div>
 
-        <!-- Resultado esperado -->
-        <div class="col-12">
-            <label class="form-label" for="resultado_esperado">Resultado esperado</label>
-            <textarea id="resultado_esperado" class="form-control" name="resultado_esperado" rows="2">
-            {{ result.resultado_esperado or '' }}
-            </textarea>
-        </div>
-
         <!-- Resultado obtenido -->
         <div class="col-12">
             <label class="form-label" for="resultado_obtenido">Resultado obtenido</label>
-            <textarea id="resultado_obtenido" class="form-control" name="resultado_obtenido" rows="2">
-            {{ result.resultado_obtenido or '' }}
-            </textarea>
-        </div>
-
-        <!-- Pasos para reproducir -->
-        <div class="col-12">
-            <label class="form-label" for="pasos_repro">Pasos para reproducir</label>
-            <textarea id="pasos_repro" class="form-control" name="pasos_repro" rows="2">
-            {{ result.pasos_repro or '' }}
-            </textarea>
+            <textarea id="resultado_obtenido" class="form-control" name="resultado_obtenido" rows="2">{{ result.resultado_obtenido or '' }}</textarea>
         </div>
 
         <!-- Notas -->
         <div class="col-12">
             <label class="form-label" for="notas">Notas / Observaciones</label>
-            <textarea id="notas" class="form-control" name="notas" rows="2">
-            {{ result.notas or '' }}
-            </textarea>
+            <textarea id="notas" class="form-control" name="notas" rows="2">{{ result.notas or '' }}</textarea>
         </div>
+
+        <!-- Archivo -->
+        <div class="col-12">
+            <label for="evidencia"class="form-label">Evidencia adjunta</label>
+            {% if result.archivo %}
+                <a href="{{ url_for('uploads.serve', filename=result.archivo) }}" target="_blank">
+                    <img src="{{ url_for('uploads.serve', filename=result.archivo) }}" alt="Archivo" style="max-width:150px;">
+                </a>
+            {% endif %}
+            <input type="file" name="archivo" class="form-control">
+            <small class="text-muted">Puedes subir una imagen, captura o evidencia del test.</small>
+        </div>
+
     </div>
 
     <div class="mt-4 d-flex justify-content-end gap-2">
-      <!-- Botón Eliminar -->
-      <button type="submit" name="delete" value="1"
-              class="btn btn-danger"
+      <button type="submit" name="delete" value="1" class="btn btn-danger"
               onclick="return confirm('¿Seguro que deseas eliminar este resultado?');">
         Eliminar
       </button>
 
-      <!-- Cancelar -->
       <a href="{{ url_for('test_bp.show', id=result.test_case_id) }}" class="btn btn-secondary">
         Cancelar
       </a>
 
-      <!-- Guardar -->
       <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </div>
   </form>

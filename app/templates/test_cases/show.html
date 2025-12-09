@@ -6,9 +6,13 @@
   <!-- ENCABEZADO -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold text-primary">{{ test_case.nombre }}</h2>
-    <form action="{{ url_for('automatizacion.run_test', id=test_case.id) }}" method="POST">
-        <button class="btn btn-success">▶ Ejecutar Test Automatizado</button>
-    </form>
+    <form action="{{ url_for('automatizacion.run_test', test_case_id=test_case.id) }}" method="POST">
+    <button class="btn btn-success">▶ Ejecutar Test Automatizado</button>
+</form>
+
+<form action="{{ url_for('automatizacion.run_test_case', test_case_id=test_case.id) }}" method="POST">
+    <button class="btn btn-success">Ejecutar en Jenkins</button>
+</form>
 
     <a href="{{ url_for('test_bp.index') }}" class="btn btn-outline-secondary btn-sm">← Volver</a>
   </div>
@@ -22,8 +26,8 @@
   {% endif %}
 {% endif %}
 
-  <!-- DETALLES DEL TEST CASE -->
-  <div class="card shadow-sm mb-4">
+ <!-- DETALLES DEL TEST CASE -->
+<div class="card shadow-sm mb-4">
   <div class="card-body">
     <h5 class="card-title text-secondary mb-3">Detalles del Test</h5>
 
@@ -71,6 +75,23 @@
       <p class="text-muted">{{ test_case.descripcion or '—' }}</p>
     </div>
 
+    <!-- NUEVOS CAMPOS AÑADIDOS -->
+    <div class="mb-3">
+      <p><strong>URL:</strong></p>
+      <p class="text-muted">{{ test_case.url or '—' }}</p>
+    </div>
+
+    <div class="mb-3">
+      <p><strong>Resultado Esperado:</strong></p>
+      <p class="text-muted">{{ test_case.resultado_esperado or '—' }}</p>
+    </div>
+    
+    <div class="mb-3">
+      <p><strong>Pasos para Reproducir:</strong></p>
+      <pre class="bg-light p-3 rounded small">{{ test_case.pasos_repro or '—' }}</pre>
+    </div>
+    <!-- FIN NUEVOS CAMPOS -->
+
     {% if test_case.test_script %}
       <div class="mb-3">
         <p><strong>Script de prueba:</strong></p>
@@ -88,6 +109,7 @@
     {% endif %}
   </div>
 </div>
+
 
 
 
@@ -137,10 +159,23 @@
               {% endif %}
             </td>
             <td>{{ res.entorno or '—' }}</td>
-            <td>{{ res.url or '—' }}</td>
-            <td>{{ res.resultado_esperado or '—' }}</td>
-            <td>{{ res.resultado_obtenido or '—' }}</td>
-            <td>{{ res.notas or '—' }}</td>
+            <td>{{ test_case.url or '—' }}</td>
+            <td>{{ test_case.resultado_esperado or '—' }}</td>
+            <td>
+              {% if res.resultado_obtenido %}
+                {{ res.resultado_obtenido[:80] }}{% if res.resultado_obtenido|length > 80 %}...{% endif %}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+
+            <td>
+              {% if res.notas %}
+                {{ res.notas[:80] }}{% if res.notas|length > 80 %}...{% endif %}
+              {% else %}
+                —
+              {% endif %}
+            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -153,11 +188,14 @@
 </div>
 
 {% if 'admin' in session.roles or 'miembro' in session.roles %}
-<!-- MODAL NUEVO RESULTADO -->
 <div class="modal fade" id="modalNuevoResultado" tabindex="-1" aria-labelledby="nuevoResultadoLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-        <form method="POST" action="{{ url_for('results.create', test_case_id=test_case.id) }}">
+
+        <!-- IMPORTANTE: enctype -->
+        <form method="POST" enctype="multipart/form-data"
+              action="{{ url_for('results.create', test_case_id=test_case.id) }}">
+
             <div class="modal-header">
                 <h5 class="modal-title" id="nuevoResultadoLabel">Nuevo Resultado de Prueba</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -165,6 +203,7 @@
 
             <div class="modal-body">
                 <div class="row g-3">
+
                     <!-- Estado -->
                     <div class="col-md-6">
                         <label class="form-label" for="estado_prueba">Estado</label>
@@ -179,45 +218,29 @@
                     <!-- Entorno -->
                     <div class="col-md-6">
                         <label class="form-label" for="entorno">Entorno</label>
-                        <input type="text" class="form-control" id="entorno" name="entorno" placeholder="Producción, Local, etc.">
-                    </div>
-
-                    <!-- URL -->
-                    <div class="col-md-6">
-                        <label class="form-label" for="url">URL</label>
-                        <input type="text" class="form-control" id="url" name="url" placeholder="https://api.miapp.com/login">
+                        <input type="text" class="form-control" id="entorno" name="entorno">
                     </div>
 
                     <!-- Usuario -->
                     <div class="col-md-6">
                         <label class="form-label" for="usu_created">Usuario (opcional)</label>
-                        <input type="text" class="form-control" id="usu_created" name="usu_created" value="{{ current_user.nombre if current_user else '' }}">
-                    </div>
-
-                    <!-- Resultado esperado -->
-                    <div class="col-12">
-                        <label class="form-label" for="resultado_esperado">Resultado esperado</label>
-                        <textarea class="form-control" id="resultado_esperado" name="resultado_esperado" rows="2"></textarea>
+                        <input type="text" class="form-control" id="usu_created" name="usu_created"
+                               value="{{ current_user.nombre if current_user else '' }}">
                     </div>
 
                     <!-- Resultado obtenido -->
                     <div class="col-12">
-                        <label class="form-label" for="resultado_obtenido">Resultado obtenido</label>
-                        <textarea class="form-control" id="resultado_obtenido" name="resultado_obtenido" rows="2"></textarea>
-                    </div>
-
-                    <!-- Pasos para reproducir -->
-                    <div class="col-12">
-                        <label class="form-label" for="pasos_repro">Pasos para reproducir</label>
-                        <textarea class="form-control" id="pasos_repro" name="pasos_repro" rows="2"></textarea>
+                        <label class="form-label">Resultado obtenido</label>
+                        <textarea class="form-control" name="resultado_obtenido" rows="2"></textarea>
                     </div>
 
                     <!-- Notas -->
                     <div class="col-12">
-                        <label class="form-label" for="notas">Notas / Observaciones</label>
-                        <textarea class="form-control" id="notas" name="notas" rows="2"></textarea>
+                        <label class="form-label">Notas / Observaciones</label>
+                        <textarea class="form-control" name="notas" rows="2"></textarea>
                     </div>
 
+                    <!-- Ciclo -->
                     {% if test_case.test_cycles %}
                     <div class="col-md-6">
                         <label class="form-label" for="test_cycle_id">Asociar a Test Cycle</label>
@@ -230,15 +253,23 @@
                     </div>
                     {% endif %}
 
-                    <!-- Crear defecto (solo visible si estado = fallido) -->
+                    <!-- Archivo -->
+                    <div class="col-12">
+                        <label class="form-label">Archivo / Evidencia</label>
+                        <input type="file" name="archivo" class="form-control">
+                        <small class="text-muted">Puedes subir una imagen, PDF, captura, etc.</small>
+                    </div>
+
+                    <!-- Checkbox defecto -->
                     <div class="col-12 mt-2">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="crear_defecto_auto" name="crear_defecto_auto">
                             <label class="form-check-label" for="crear_defecto_auto">
-                            Crear defecto automáticamente si el resultado es fallido
+                                Crear defecto automáticamente si el resultado es fallido
                             </label>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -246,11 +277,13 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Guardar resultado</button>
             </div>
+
         </form>
     </div>
   </div>
 </div>
 {% endif %}
+
 <!-- Script: mostrar checkbox solo si el estado es fallido -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {

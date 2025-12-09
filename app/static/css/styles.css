@@ -174,3 +174,10 @@ main {
     font-style: italic;
     color: #666;
 }
+
+.long-text {
+    max-height: 150px;    /* Altura máxima visible */
+    overflow-y: auto;     /* Scroll vertical */
+    resize: vertical;     /* Permite estirar si el usuario quiere */
+    white-space: pre-wrap; /* Mantiene saltos de línea y formato */
+}

@@ -23,12 +23,9 @@ class Result(db.Model):
     # Información de la ejecución
     estado_prueba = db.Column(db.Enum(EstadoPruebaEnum), nullable=False)
     entorno = db.Column(db.String(100))
-    url = db.Column(db.String(255))                 
-    resultado_esperado = db.Column(db.Text)
-    resultado_obtenido = db.Column(db.Text)
-    pasos_repro = db.Column(db.Text)                
+    resultado_obtenido = db.Column(db.Text)               
     notas = db.Column(db.Text)
-
+    archivo = db.Column(db.String(255), nullable=True)
     # Auditoría
     fecha_created = db.Column(db.DateTime, default=datetime.utcnow)
     usu_created = db.Column(db.String(100))

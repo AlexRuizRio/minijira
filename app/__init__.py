@@ -25,6 +25,14 @@ def create_app(test_config=None):
         else:
             app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/minijira'
 
+            
+    # Configuración de carpeta para uploads
+    UPLOAD_FOLDER = os.path.join(app.root_path, 'uploads')
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+    # Crear carpeta si no existe
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
     # Inicializar DB
     db.init_app(app)
 
@@ -37,7 +45,9 @@ def create_app(test_config=None):
     from app.controllers.results_controller import results_bp
     from app.controllers.defects_controller import defects_bp
     from app.controllers.automatizacion_controller import automatizacion_bp
+    from app.controllers.results_controller import uploads_bp
 
+    app.register_blueprint(uploads_bp)
     app.register_blueprint(automatizacion_bp)
     app.register_blueprint(defects_bp)
     app.register_blueprint(results_bp)

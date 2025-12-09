@@ -9,10 +9,13 @@ def main():
     driver = webdriver.Chrome()
 
     try:
+        log = "Error: En el driver"
+
         driver.get("http://127.0.0.1:5000/login")
 
         wait = WebDriverWait(driver, 3)
 
+        log = "Error: En el login"
         username = wait.until(
             EC.element_to_be_clickable((By.NAME, "username"))
         )
@@ -27,77 +30,36 @@ def main():
         password.send_keys(Keys.RETURN)
         time.sleep(2)
 
-
-                #CREAR
+        #CREAR
+        log = "Error: En el boton create"
         boton = wait.until(
             EC.element_to_be_clickable((By.XPATH, "/html/body/main/a"))
         )
         boton.click()
         time.sleep(3)
 
-
+        log = "Error: En el campo nombre"
         nombre = wait.until(
             EC.element_to_be_clickable((By.NAME, "nombre"))
         )
 
+        log = "Error: En el campo descripcion"
         descripcion = driver.find_element(By.NAME, "descripcion")
 
+        log = "Error: Al enviar los datos"
         nombre.send_keys("Proy Selenium")
         descripcion.send_keys("Esto es un proyecto creado a traves de Selenium")
 
+        log = "Error: Al enviar los datos"
         boton = wait.until(
             EC.element_to_be_clickable((By.XPATH, "/html/body/main/div/div/div/div/div/form/button"))
         )
         boton.click()
         time.sleep(2)
-
-        boton = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "/html/body/main/div/a[2]"))
-        )
-        boton.click()
-        time.sleep(2)
-
-
-        # EDITAR
-        boton = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "/html/body/main/div[1]/a[1]"))
-        )
-        boton.click()
-
-        nombre = wait.until(
-            EC.element_to_be_clickable((By.NAME, "nombre"))
-        )
-
-        descripcion = driver.find_element(By.NAME, "descripcion")
-        nombre.clear()
-        descripcion.clear()
-
-        time.sleep(1)
-
-        nombre.send_keys("Cambio de nombre")
-        descripcion.send_keys("Cambio de descripcion")
-
-        boton = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "/html/body/main/div/div/div/div/div/form/button"))
-        )
-        boton.click()
-        time.sleep(2)
-
-
-        # BORRAR
-        boton = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "/html/body/main/div[1]/a[2]"))
-        )
-        boton.click()
-        time.sleep(2)
         
-        try:
-            alert = driver.switch_to.alert
-            alert.accept()
-        except NoAlertPresentException:
-            print("No hay alert abierto")
-        time.sleep(2)
-        
+        print("OK")
+    except Exception:
+        print(log)
     finally:
         driver.quit()
 

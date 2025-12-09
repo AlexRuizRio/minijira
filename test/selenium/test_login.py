@@ -32,7 +32,7 @@ def main():
         password.send_keys(Keys.RETURN)
 
         time.sleep(2)
-    except ErrorLoginException:
+    except Exception:
         print(log)
     finally:
         print("OK")

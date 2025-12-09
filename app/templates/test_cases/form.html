@@ -5,36 +5,73 @@
 <div class="container mt-4">
   <h2 class="fw-bold mb-4">{{ 'Editar' if test_case else 'Nuevo' }} Test Case</h2>
 
-  <form method="POST">
+  <form method="POST" enctype="multipart/form-data">
 
+    <!-- Nombre -->
     <div class="mb-3">
       <label for="nombre" class="form-label">Nombre</label>
       <input id="nombre" type="text" name="nombre" class="form-control" required
              value="{{ test_case.nombre if test_case else '' }}">
     </div>
 
+    <!-- Objetivo -->
     <div class="mb-3">
       <label for="objetivo" class="form-label">Objetivo</label>
-      <textarea id="objetivo" name="objetivo" class="form-control" rows="2">{{ test_case.objetivo if test_case else '' }}</textarea>
+      <textarea id="objetivo" name="objetivo" class="form-control" rows="2">{{ 
+        test_case.objetivo if test_case else '' 
+      }}</textarea>
     </div>
 
+    <!-- Precondición -->
     <div class="mb-3">
       <label for="precondicion" class="form-label">Precondición</label>
-      <textarea id="precondicion" name="precondicion" class="form-control" rows="2">{{ test_case.precondicion if test_case else '' }}</textarea>
+      <textarea id="precondicion" name="precondicion" class="form-control" rows="2">{{ 
+        test_case.precondicion if test_case else '' 
+      }}</textarea>
+    </div>
+
+    <!-- Descripción -->
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea id="descripcion" name="descripcion" class="form-control" rows="3">{{ 
+        test_case.descripcion if test_case else '' 
+      }}</textarea>
+    </div>
+
+    <!-- NUEVOS CAMPOS -->
+    <div class="mb-3">
+      <label for="url" class="form-label">URL</label>
+      <input id="url" type="text" name="url" class="form-control"
+             placeholder="https://miapp.com/login"
+             value="{{ test_case.url if test_case else '' }}">
     </div>
 
     <div class="mb-3">
-      <label for="descripcion" class="form-label">Descripción</label>
-      <textarea id="descripcion" name="descripcion" class="form-control" rows="3">{{ test_case.descripcion if test_case else '' }}</textarea>
+      <label for="resultado_esperado" class="form-label">Resultado esperado</label>
+      <textarea id="resultado_esperado" name="resultado_esperado" 
+                class="form-control" rows="2">{{ 
+        test_case.resultado_esperado if test_case else '' 
+      }}</textarea>
     </div>
 
+    <div class="mb-3">
+      <label for="pasos_repro" class="form-label">Pasos para reproducir</label>
+      <textarea id="pasos_repro" name="pasos_repro" 
+                class="form-control" rows="3">{{ 
+        test_case.pasos_repro if test_case else '' 
+      }}</textarea>
+    </div>
+    <!-- FIN NUEVOS CAMPOS -->
+
+    <!-- Estado / Prioridad / Tipo -->
     <div class="row">
 
       <div class="col-md-4 mb-3">
         <label for="estado" class="form-label">Estado</label>
         <select id="estado" name="estado" class="form-select" required>
           {% for e in EstadoEnum %}
-          <option value="{{ e.value }}" {% if test_case and test_case.estado == e %}selected{% endif %}>
+          <option value="{{ e.value }}"
+            {% if test_case and test_case.estado == e %}selected{% endif %}>
             {{ e.value | replace('_',' ') | capitalize }}
           </option>
           {% endfor %}
@@ -45,7 +82,8 @@
         <label for="prioridad" class="form-label">Prioridad</label>
         <select id="prioridad" name="prioridad" class="form-select" required>
           {% for p in PrioridadEnum %}
-          <option value="{{ p.value }}" {% if test_case and test_case.prioridad == p %}selected{% endif %}>
+          <option value="{{ p.value }}"
+            {% if test_case and test_case.prioridad == p %}selected{% endif %}>
             {{ p.value | capitalize }}
           </option>
           {% endfor %}
@@ -56,7 +94,8 @@
         <label for="tipo" class="form-label">Tipo</label>
         <select id="tipo" name="tipo" class="form-select" required>
           {% for t in TipoTestEnum %}
-          <option value="{{ t.value }}" {% if test_case and test_case.tipo == t %}selected{% endif %}>
+          <option value="{{ t.value }}"
+            {% if test_case and test_case.tipo == t %}selected{% endif %}>
             {{ t.value | capitalize }}
           </option>
           {% endfor %}
@@ -64,14 +103,34 @@
       </div>
 
     </div>
-
-    <div class="mb-3">
-      <label for="test_script" class="form-label">Test Script</label>
-      <textarea id="test_script" name="test_script" class="form-control" rows="4">{{ test_case.test_script if test_case else '' }}</textarea>
+    <div class="col-md-6">
+      <label for="archivo_excel" class="form-label">Archivo Excel / CSV</label>
+      <input type="file" name="archivo_excel" class="form-control">
     </div>
 
+    {% if test_case and test_case.archivo_excel %}
+        <div class="col-md-6">
+            <label for="archivo_excel" class="form-label d-block">Archivo actual:</label>
+            <a href="{{ url_for('uploads.serve', filename=test_case.archivo_excel) }}" target="_blank">
+                📄 {{ test_case.archivo_excel }}
+            </a>
+        </div>
+    {% endif %}
+    
+    <!-- Test Script -->
+    <div class="mb-3">
+      <label for="test_script" class="form-label">Test Script</label>
+      <textarea id="test_script" name="test_script" class="form-control" rows="6">{{ 
+        test_case.test_script if test_case else '' 
+      }}</textarea>
+    </div>
+    
+    
+
+    <!-- Botones -->
     <button type="submit" class="btn btn-primary">Guardar</button>
     <a href="{{ url_for('test_bp.index') }}" class="btn btn-secondary">Cancelar</a>
+
   </form>
 </div>
 {% endblock %}

@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from app import db
+import os
+from werkzeug.utils import secure_filename
 from app.models.testcase_model import TestCase, EstadoEnum, PrioridadEnum, TipoTestEnum
 from app.models.testcycle_model import TestCycle
 from app.models.result_model import Result
@@ -57,26 +59,45 @@ def create_test_case():
         objetivo = request.form.get('objetivo')
         precondicion = request.form.get('precondicion')
         descripcion = request.form.get('descripcion')
+        url = request.form.get('url')
+        resultado_esperado = request.form.get('resultado_esperado')
+        pasos_repro = request.form.get('pasos_repro')
         estado = EstadoEnum(request.form.get('estado'))
         prioridad = PrioridadEnum(request.form.get('prioridad'))
         tipo = TipoTestEnum(request.form.get('tipo'))
+
         test_script = request.form.get('test_script')
         usu_created = session.get('username', 'Desconocido')
+
+        # ---- ARCHIVO EXCEL / CSV ----
+        archivo_subido = request.files.get("archivo_excel")
+        archivo_excel = None
+
+        if archivo_subido and archivo_subido.filename.strip():
+            filename = secure_filename(archivo_subido.filename)
+            archivo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            archivo_subido.save(archivo_path)
+            archivo_excel = filename
 
         nuevo_test = TestCase(
             nombre=nombre,
             objetivo=objetivo,
             precondicion=precondicion,
             descripcion=descripcion,
+            url = url,
+            resultado_esperado = resultado_esperado,
+            pasos_repro = pasos_repro,
             estado=estado,
             prioridad=prioridad,
             tipo=tipo,
             test_script=test_script,
-            usu_created=usu_created
+            usu_created=usu_created,
+            archivo_excel=archivo_excel
         )
 
         db.session.add(nuevo_test)
         db.session.commit()
+
         flash("Test Case creado correctamente.", "success")
         return redirect(url_for('test_bp.index'))
 
@@ -99,13 +120,25 @@ def edit_test_case(id):
         test_case.objetivo = request.form.get('objetivo')
         test_case.precondicion = request.form.get('precondicion')
         test_case.descripcion = request.form.get('descripcion')
+
         test_case.estado = EstadoEnum(request.form.get('estado'))
         test_case.prioridad = PrioridadEnum(request.form.get('prioridad'))
         test_case.tipo = TipoTestEnum(request.form.get('tipo'))
+
         test_case.test_script = request.form.get('test_script')
 
+        # ---- GESTIÓN DE ARCHIVO ----
+        archivo_subido = request.files.get("archivo_excel")
+
+        if archivo_subido and archivo_subido.filename.strip():
+            filename = secure_filename(archivo_subido.filename)
+            archivo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            archivo_subido.save(archivo_path)
+            test_case.archivo_excel = filename
+
         db.session.commit()
-        flash("✏️ Test Case actualizado correctamente.", "success")
+
+        flash("Test Case actualizado correctamente.", "success")
         return redirect(url_for('test_bp.index'))
 
     return render_template(
@@ -115,6 +148,7 @@ def edit_test_case(id):
         PrioridadEnum=PrioridadEnum,
         TipoTestEnum=TipoTestEnum
     )
+
 
 
 # Eliminar TestCase
