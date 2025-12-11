@@ -165,9 +165,9 @@ def run_test_case(test_case_id):
 
     JENKINS_URL = "http://localhost:8080"     # sin slash final
     JOB = "Pipeline"
-    USER = "ardelrio"                      # <- usar username real
-    API_TOKEN = "11c4d543e2c72cacdfe6dcb4702548b630"                # <- generar en Jenkins (user > Configure > API Token)
-    TOKEN_BUILD = "MI_TOKEN_JENKINS"          # token del job (Trigger builds remotely)
+    USER = ""                      # <- usar username real
+    API_TOKEN = ""                # <- generar en Jenkins (user > Configure > API Token)
+    TOKEN_BUILD = ""          # token del job (Trigger builds remotely)
 
     session = requests.Session()
     session.auth = (USER, API_TOKEN)

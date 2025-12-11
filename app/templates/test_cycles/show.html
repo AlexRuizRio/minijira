@@ -122,6 +122,13 @@
   </form>
 
   <hr>
+    <a href="/reporte/testcycle/{{ cycle.id }}/pdf" class="btn btn-danger">
+        Descargar PDF
+    </a>
+
+    <a href="/reporte/testcycle/{{ cycle.id }}/excel" class="btn btn-success">
+        Descargar Excel
+    </a>
 
   <div class="mt-4">
     <a href="{{ url_for('test_bp.index') }}" class="btn btn-secondary">Volver al listado</a>

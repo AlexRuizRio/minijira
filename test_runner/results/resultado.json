@@ -1,0 +1,157 @@
+[
+{
+  "elements": [
+    {
+      "keyword": "Scenario",
+      "location": "features/example.feature:3",
+      "name": "Login v\u00e1lido",
+      "status": "passed",
+      "steps": [
+        {
+          "keyword": "Given",
+          "location": "features/example.feature:4",
+          "match": {
+            "arguments": [],
+            "location": "features/steps/steps_selenium.py:6"
+          },
+          "name": "abro el navegador",
+          "result": {
+            "duration": 0.0006718635559082031,
+            "status": "passed"
+          },
+          "step_type": "given"
+        },
+        {
+          "keyword": "And",
+          "location": "features/example.feature:5",
+          "match": {
+            "arguments": [
+              {
+                "name": "url",
+                "value": "http://127.0.0.1:5000/login"
+              }
+            ],
+            "location": "features/steps/steps_selenium.py:10"
+          },
+          "name": "voy a la url \"http://127.0.0.1:5000/login\"",
+          "result": {
+            "duration": 1.4326374530792236,
+            "status": "passed"
+          },
+          "step_type": "given"
+        },
+        {
+          "keyword": "When",
+          "location": "features/example.feature:6",
+          "match": {
+            "arguments": [
+              {
+                "name": "texto",
+                "value": "admin"
+              },
+              {
+                "name": "campo",
+                "value": "username"
+              }
+            ],
+            "location": "features/steps/steps_selenium.py:20"
+          },
+          "name": "escribo \"admin\" en el campo \"username\"",
+          "result": {
+            "duration": 0.10062336921691895,
+            "status": "passed"
+          },
+          "step_type": "when"
+        },
+        {
+          "keyword": "And",
+          "location": "features/example.feature:7",
+          "match": {
+            "arguments": [
+              {
+                "name": "texto",
+                "value": "admin123"
+              },
+              {
+                "name": "campo",
+                "value": "password"
+              }
+            ],
+            "location": "features/steps/steps_selenium.py:20"
+          },
+          "name": "escribo \"admin123\" en el campo \"password\"",
+          "result": {
+            "duration": 0.09528303146362305,
+            "status": "passed"
+          },
+          "step_type": "when"
+        },
+        {
+          "keyword": "And",
+          "location": "features/example.feature:8",
+          "match": {
+            "arguments": [
+              {
+                "name": "campo",
+                "value": "password"
+              }
+            ],
+            "location": "features/steps/steps_selenium.py:30"
+          },
+          "name": "pulso ENTER en el campo \"password\"",
+          "result": {
+            "duration": 1.0392582416534424,
+            "status": "passed"
+          },
+          "step_type": "when"
+        },
+        {
+          "keyword": "Then",
+          "location": "features/example.feature:9",
+          "match": {
+            "arguments": [
+              {
+                "name": "mensaje",
+                "value": "Inicio de sesi\u00f3n exitoso."
+              }
+            ],
+            "location": "features/steps/steps_selenium.py:40"
+          },
+          "name": "deberia ver el mensaje \"Inicio de sesi\u00f3n exitoso.\"",
+          "result": {
+            "duration": 0.023875713348388672,
+            "status": "passed"
+          },
+          "step_type": "then"
+        },
+        {
+          "keyword": "And",
+          "location": "features/example.feature:10",
+          "match": {
+            "arguments": [
+              {
+                "name": "mensaje",
+                "value": "OK"
+              }
+            ],
+            "location": "features/steps/steps_selenium.py:51"
+          },
+          "name": "cierro el navegador mostrando \"OK\"",
+          "result": {
+            "duration": 3.4293627738952637,
+            "status": "passed"
+          },
+          "step_type": "then"
+        }
+      ],
+      "tags": [],
+      "type": "scenario"
+    }
+  ],
+  "keyword": "Feature",
+  "location": "features/example.feature:1",
+  "name": "Login del sistema",
+  "status": "passed",
+  "tags": []
+}
+]
